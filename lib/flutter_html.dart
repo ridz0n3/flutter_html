@@ -51,6 +51,7 @@ class Html extends StatelessWidget {
     Key? key,
     GlobalKey? anchorKey,
     required this.data,
+    this.defaultTextStyle,
     this.onLinkTap,
     this.onAnchorTap,
     this.customRender = const {},
@@ -73,6 +74,7 @@ class Html extends StatelessWidget {
     GlobalKey? anchorKey,
     @required this.document,
     this.onLinkTap,
+    this.defaultTextStyle,
     this.onAnchorTap,
     this.customRender = const {},
     this.customImageRenders = const {},
@@ -89,6 +91,7 @@ class Html extends StatelessWidget {
         _anchorKey = anchorKey ?? GlobalKey(),
         super(key: key);
 
+  final TextStyle? defaultTextStyle;
   /// A unique key for this Html widget to ensure uniqueness of anchors
   final GlobalKey _anchorKey;
 
@@ -156,24 +159,27 @@ class Html extends StatelessWidget {
 
     return Container(
       width: width,
-      child: HtmlParser(
-        key: _anchorKey,
-        htmlData: doc,
-        onLinkTap: onLinkTap,
-        onAnchorTap: onAnchorTap,
-        onImageTap: onImageTap,
-        onCssParseError: onCssParseError,
-        onImageError: onImageError,
-        onMathError: onMathError,
-        shrinkWrap: shrinkWrap,
-        selectable: false,
-        style: style,
-        customRender: customRender,
-        imageRenders: {}
-          ..addAll(customImageRenders)
-          ..addAll(defaultImageRenders),
-        tagsList: tagsList.isEmpty ? Html.tags : tagsList,
-        navigationDelegateForIframe: navigationDelegateForIframe,
+      child: DefaultTextStyle.merge(
+        style: defaultTextStyle ?? DefaultTextStyle.of(context).style,
+        child: HtmlParser(
+          key: _anchorKey,
+          htmlData: doc,
+          onLinkTap: onLinkTap,
+          onAnchorTap: onAnchorTap,
+          onImageTap: onImageTap,
+          onCssParseError: onCssParseError,
+          onImageError: onImageError,
+          onMathError: onMathError,
+          shrinkWrap: shrinkWrap,
+          selectable: false,
+          style: style,
+          customRender: customRender,
+          imageRenders: {}
+            ..addAll(customImageRenders)
+            ..addAll(defaultImageRenders),
+          tagsList: tagsList.isEmpty ? Html.tags : tagsList,
+          navigationDelegateForIframe: navigationDelegateForIframe,
+        ),
       ),
     );
   }
